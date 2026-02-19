@@ -29,6 +29,7 @@ The program outputs the smallest possible sequence of instructions that sorts th
 The program is executed as follows:
 
 ```bash
+make
 ./push_swap [list of integers]
 ```
 
@@ -36,6 +37,12 @@ Example:
 
 ```bash
 ./push_swap 2 1 3 6 5 8
+```
+
+Or as a single string:
+
+```bash
+./push_swap "2 1 3 6 5 8"
 ```
 
 The program prints a sequence of stack operations to `stdout`. When executed, these operations must leave stack A sorted in ascending order.
@@ -75,7 +82,11 @@ Only these operations may be used to achieve a sorted stack.
 
 The implementation follows a K-sort–inspired strategy.
 
-Values are first indexed to simplify comparisons. Elements from stack A are pushed to stack B in controlled ranges, keeping smaller values grouped together and larger values grouped together. This creates a structured distribution in stack B.
+**Small Sets (≤ 5 numbers):**
+A dedicated hardcoded algorithm is used for sorting small sets of numbers efficiently with the minimum number of moves.
+
+**Large Sets:**
+Values are first indexed (normalized to their rank) to simplify comparisons. Elements from stack A are pushed to stack B in controlled ranges (chunks), keeping smaller values grouped together and larger values grouped together. This creates a structured distribution in stack B.
 
 Once all elements are in stack B, the algorithm repeatedly pushes the largest available value back to stack A. By always selecting the current maximum, stack A is rebuilt in sorted order from top to bottom.
 
@@ -88,10 +99,13 @@ This approach balances partitioning and controlled reconstruction, aiming to red
 The bonus includes a `checker` program:
 
 ```bash
+make bonus
 ./checker [list of integers]
 ```
 
 The checker reads instructions from `stdin`, executes them, and verifies whether stack A is sorted.
+
+It reuses the exact same operations (`sa`, `sb`, `ra`, `rb`, etc.) defined in the mandatory part, ensuring consistency in behavior.
 
 It outputs:
 - `OK` if sorted
